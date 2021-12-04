@@ -33,7 +33,7 @@ TODO
 November 16th, 2021.
 
 # Wallet(s) to send payment if the project wins
-Ethereum Account: 0x90F79bf6EB2c4f870365E785982E1f101E93b906
+Ethereum Account: 0x76e637D494729aA89f1e977065b5c7f86862616F
 
 # Person of contact for the judges in case there are any questions
 Aleksandar Berar
