@@ -6,7 +6,7 @@ TODO
 
 # Short pitch
 ## Pain
-Traditional centralized crowdsourcing platforms are only available to people of certain countries. They also require users to comply with the KYC process. That makes them permissible. The trust also must be placed to these centralized platforms. Their business model requires fees of up to 10% per transaction. The early bird contributors to the project can't trade with the potential rewards that they had purchased. 
+Traditional centralized crowdsourcing platforms are only available to people of certain countries and do not accept cryptocurrencies. They also require users to comply with the KYC process. That makes them permissible. The trust also must be placed to these centralized platforms. Their business model requires fees of up to 10% per transaction. The early bird contributors to the project can't trade with the potential rewards that they had purchased. 
 
 ## Target Audience
 Dominated by males (61%), more than 50% of the audience is 24 to 35 years old. 11% of males are 50 years or older while the ratio of females from the same age group is almost half of it. When we compare males and females of the audience, both genders’ dominant age range is 24 to 35.
