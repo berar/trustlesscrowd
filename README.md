@@ -14,15 +14,15 @@ Dominated by males (61%), more than 50% of the audience is 24 to 35 years old. 1
 Crowdfunding audience is composed of individuals who are creative, curious, sensitive, and enthusiastic about life. They are natural entrepreneurs who love innovation, practicality, as well as giving back to the community. When they are spending time on social media, they follow the Business and Science world, like to have a good laugh and learn about the latest games.
 
 ## Solution
-Meet TrustlessCrowd Trustless and Serverless Crowdsourcing dApp with NFT Dex.
+Meet TrustlessCrowd - Trustless and Serverless Crowdsourcing dApp with NFT Dex.
 
-No KYC Required. Permissionless and Censorship-Resistant.
+No KYC is required. Permissionless and Censorship-Resistant.
 
 No Central Server. The Pages are Hosted on IPFS Through Pinata.Cloud. No Cookies or Tracking Also.
 
 No Platform Fees. You Can Donate to Devs if You Wish.
 
-Collateralized and Non-Custodian Swaps Play. The Trust is Guaranteed by Code and Game Theory.
+Collateralized and Non-Custodian Swaps Play. Game Theory and the Code guarantee Trust.
 
 Be an Early Bird to a Campaign. Earn in Native Cryptocurrencies By Trading on DEX.
 
