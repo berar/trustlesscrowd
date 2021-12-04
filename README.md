@@ -9,9 +9,22 @@ TODO
 Traditional centralized crowdsourcing platforms are only available to people of certain countries. They also require users to comply with the KYC process. That makes them permissible. The trust also must be placed to these centralized platforms. Their business model requires fees of up to 10% per transaction. The early bird contributors to the project can't trade with the potential rewards that they had purchased. 
 
 ## Target Audience
-TODO
+Dominated by males (61%), more than 50% of the audience is 24 to 35 years old. 11% of males are 50 years or older while the ratio of females from the same age group is almost half of it. When we compare males and females of the audience, both genders’ dominant age range is 24 to 35.
+
+Crowdfunding audience is composed of individuals who are creative, curious, sensitive, and enthusiastic about life. They are natural entrepreneurs who love innovation, practicality, as well as giving back to the community. When they are spending time on social media, they follow the Business and Science world, like to have a good laugh and learn about the latest games.
+
 ## Solution
-TODO
+Meet TrustlessCrowd Trustless and Serverless Crowdsourcing dApp with NFT Dex.
+
+No KYC Required. Permissionless and Censorship-Resistant.
+
+No Central Server. The Pages are Hosted on IPFS Through Pinata.Cloud. No Cookies or Tracking Also.
+
+No Platform Fees. You Can Donate to Devs if You Wish.
+
+Collateralized and Non-Custodian Swaps Play. The Trust is Guaranteed by Code and Game Theory.
+
+Be an Early Bird to a Campaign. Earn in Native Cryptocurrencies By Trading on DEX.
 
 # Recorded video demo of the project and small pitch
 TODO
