@@ -41,7 +41,8 @@ Aleksandar Berar
 aleksandar.berar@gmail.com
 
 # Any additional docs the team wants to have reviewed
-TODO
+
+You can review the source code and the documentation found in this repository. 
 
 # Documentation on how to run the project
 
