@@ -1,4 +1,4 @@
-# trustlesscrowd
+# TrustlessCrowd
 Trustless and Serverless Crowdsourcing dApp with NFT Dex.
 
 # Submission link
@@ -44,4 +44,20 @@ aleksandar.berar@gmail.com
 TODO
 
 # Documentation on how to run the project
-TODO
+
+## Contracts
+
+1. Make sure you have node and npm installed.
+2. Clone this repository. 
+3. Navigate into the contracts folder.
+4. Run ```npm install```
+5. To run tests, run ```npx hardhat test```
+6. To deploy the contracts, first open hardhat.config.js and change the accounts variables to your own private keys. Then change the defaultNetwork accordingly. Then run ```npx hardhat run scripts/deploy.js```
+
+## "Server"
+
+To deploy the html files and host them serverless, open server/backend/templates/campaign_template.html, change tokenAddress value to be according ERC20 USDC token address. Change sampleCFAddress to point to CampaignFactory that you previously generated. Use pinata.cloud to upload this html. 
+
+Then open server/backend/templates/index.html, change tokenAddress and cfAddress, just like in the previous steps. Change campaignTemplateUrl to point to the link that you got from pinata for campaign_template.html. Upload index.html to pinata.cloud and you just made a serverless dApp. 
+
+You can also run this on your local machine with python and flask. First make sure that you follow the steps off of the first paragraph. Then make changes to the index.html file that were stated in the second paragraph. Install python3.6 and pip3. Then install flask, flask-limiter, flask-cors and setproctitle with pip3. To run the server, navigate into server folder and run ```python3.6 -m backend.app 5000```. 
