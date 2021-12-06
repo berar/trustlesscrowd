@@ -1,0 +1,25 @@
+{
+    "title": "Some Title", 
+    "subtitle": "Some Subtitle", 
+    "location": "Miami",
+    "category": "Other",
+    "subcategory": "Other", 
+    "story": "<h1 class=\"title\">Hello</h1>", 
+    "created_at": 1605460505,
+    "featured_image": "https://gateway.pinata.cloud/ipfs/Qme7DruYHyZbdUFBDK5S61a2xGtjpjeSArovwx38CwhKyD",
+    "youtube_uri": "meYsDqkMENs", 
+    "rewards": [
+        {
+            "name": "Reward 1",
+            "description": "Some Description 1", 
+            "delivery_at": 1605460505, 
+            "featured_image": ""
+        }, 
+        {
+            "name": "Reward 2",
+            "description": "Some Description 2", 
+            "delivery_at": 1605460505, 
+            "featured_image": ""
+        }
+    ]
+}

@@ -1,0 +1,3228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Trustless and serverless crowdfunding and crowdloaning dApp with NFT dex."
+    />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/js/bulma-extensions.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-extensions@6.2.7/dist/css/bulma-extensions.min.css"></link>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bulma-accordion@2.0.1/dist/js/bulma-accordion.min.js"></script> 
+
+    <script src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+
+    <link href="https://fonts.cdnfonts.com/css/sofia-pro" rel="stylesheet"></link>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.6.1-rc.2/web3.min.js" integrity="sha512-KURAVUCRxZKDemghhiNqTnYzVPUtO3GYznBZRWRBT2GJJ5PmePAxfO7QMGCM8xUJ0QfrUYJDrtRJM4L4NOtfow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <title>trustless-crowd</title>
+
+    <script>
+
+        const tokenAbi = [
+          {
+            "inputs": [],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+          },
+          {
+            "anonymous": false,
+            "inputs": [
+              {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+              },
+              {
+                "indexed": true,
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+              },
+              {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "name": "Approval",
+            "type": "event"
+          },
+          {
+            "anonymous": false,
+            "inputs": [
+              {
+                "indexed": true,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+              },
+              {
+                "indexed": true,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+              },
+              {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              }
+            ],
+            "name": "Transfer",
+            "type": "event"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+              }
+            ],
+            "name": "allowance",
+            "outputs": [
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              }
+            ],
+            "name": "approve",
+            "outputs": [
+              {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+              }
+            ],
+            "name": "balanceOf",
+            "outputs": [
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          },
+          {
+            "inputs": [],
+            "name": "decimals",
+            "outputs": [
+              {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "subtractedValue",
+                "type": "uint256"
+              }
+            ],
+            "name": "decreaseAllowance",
+            "outputs": [
+              {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "addedValue",
+                "type": "uint256"
+              }
+            ],
+            "name": "increaseAllowance",
+            "outputs": [
+              {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          {
+            "inputs": [],
+            "name": "name",
+            "outputs": [
+              {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          },
+          {
+            "inputs": [],
+            "name": "symbol",
+            "outputs": [
+              {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          },
+          {
+            "inputs": [],
+            "name": "totalSupply",
+            "outputs": [
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "recipient",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              }
+            ],
+            "name": "transfer",
+            "outputs": [
+              {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          {
+            "inputs": [
+              {
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "recipient",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              }
+            ],
+            "name": "transferFrom",
+            "outputs": [
+              {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          }
+        ];
+        const cfAbi = [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "usdc_address",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_uri",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "number_of_days",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "prices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "CampaignCreated",
+      "type": "event"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "avatars",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "campaign_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uri",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "number_of_days",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "prices",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "string",
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "image_url",
+          "type": "string"
+        }
+      ],
+      "name": "create_campaign",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "deployed_campaigns",
+      "outputs": [
+        {
+          "internalType": "contract Campaign",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "dev_addres",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "donate_to_dev",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "campaign_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "get_campaign",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "get_campaign_owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "get_deployed_campaigns",
+      "outputs": [
+        {
+          "internalType": "contract Campaign[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "nicknames",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "image_url",
+          "type": "string"
+        }
+      ],
+      "name": "set_avatar",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "nickname",
+          "type": "string"
+        }
+      ],
+      "name": "set_nickname",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "name": "uri_id",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ];
+        const cAbi = [
+    {
+      "inputs": [
+        {
+          "internalType": "contract ERC20",
+          "name": "_usdc_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "_uri",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "number_of_days",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "supplies",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "string",
+          "name": "_title",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_image_url",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "CollateralDeposited",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "commentor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        }
+      ],
+      "name": "CommentAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "funding_balance",
+          "type": "uint256"
+        }
+      ],
+      "name": "Donated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "taker",
+          "type": "address"
+        }
+      ],
+      "name": "OrderCalled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderCanceled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum ERC1155Dex.OrderType",
+          "name": "order_type",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nft_id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "OrderPosted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Refunded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "funding_balance",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardBought",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardClaimed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "RewardSupplyIncreased",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "values",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "TransferBatch",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "TransferSingle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "value",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "URI",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        }
+      ],
+      "name": "UpdateAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "pool_balance",
+          "type": "uint256"
+        }
+      ],
+      "name": "Withdrawn",
+      "type": "event"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "inputs": [],
+      "name": "MIN_PRICE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        }
+      ],
+      "name": "add_comment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        }
+      ],
+      "name": "add_update",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "amount_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "accounts",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "balanceOfBatch",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "buy_reward",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "call_ask",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "call_bid",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancel_ask",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancel_bid",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "claim_reward",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "claimed_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "comment_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "comments",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "commentor",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "deadline",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "deposit_collateral",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "funding_balance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "funding_goal",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "comment_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "get_comment",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "update_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "get_update",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "id_reward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "collateral",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "total_supply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "current_supply",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "ids",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "image_url",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "increase_reward_supply",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "is_deposited",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "is_funded",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "order_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "orders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum ERC1155Dex.OrderType",
+          "name": "order_type",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nft_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "completed",
+          "type": "bool"
+        },
+        {
+          "internalType": "address",
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "nft_id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "post_ask",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "nft_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "post_bid",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "order_id",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "refund_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ids",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeBatchTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "info",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "send_encrypted_info",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "title",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "update_count",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "updates",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "content",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "uri",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ];
+    
+        const campaignTemplateUrl = 'https://gateway.pinata.cloud/ipfs/QmQej2R4rUZ1soZM4E5JdVN4ivY8ELyNhDdMtXdeqa3Lvz';
+        const tokenAddress = '0xb190945026d384378cFF9394C6Eb0ee26fB0135B';
+        const cfAddress = '0x172D3f476C58d04060e598Aa4D03036e1cC72d8c';
+        let rewardCount = 0;
+        let rewardIdList = [];
+        let mmConnected = false;
+        let cf = undefined;
+        let lastProjectIndex = 0;
+
+        const placeHolderCampaigns = [
+          { title: "This Could be Your Campaign!", uri: "/#root", image: 'https://i.imgur.com/LwqrBhT.png' },
+          { title: "This Could be Your Campaign!", uri: "/#root", image: 'https://i.imgur.com/LwqrBhT.png' },
+          { title: "This Could be Your Campaign!", uri: "/#root", image: 'https://i.imgur.com/LwqrBhT.png' },
+          { title: "This Could be Your Campaign!", uri: "/#root", image: 'https://i.imgur.com/LwqrBhT.png' },
+          { title: "This Could be Your Campaign!", uri: "/#root", image: 'https://i.imgur.com/LwqrBhT.png' },
+          { title: "This Could be Your Campaign!", uri: "/#root", image: 'https://i.imgur.com/LwqrBhT.png' },
+        ];
+
+        const networkConfig = {
+          '0x61': {
+            'image': 'https://gateway.pinata.cloud/ipfs/Qmau5DqcdFWuw64pKmcupkFh8GPeHM9uekKHfjPnNDwwvN',
+            'explorer': 'https://bscscan.com/',
+            'network': 'bnb'
+          },
+          '0x13881': {
+            'image': 'https://gateway.pinata.cloud/ipfs/QmdeNFYKvKnAcATkQ9qtp24TP6t73gT6Po8zmvJTuC8YVg',
+            'explorer': 'https://polygonscan.com/',
+            'network': 'polygon'
+          }
+        };
+
+        async function createClicked() {
+            connectWalledClicked();
+
+            $('#createButton').attr('class', 'button is-primary is-fullwidth is-loading');
+            if(!validate(['title', 'subtitle', 'location', 'story', 'pinataKey', 'pinataSecret', 'image', 'days', 'email'])) {
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                return;
+            
+            } 
+            let youtubeUrl = $('#youtubeUrl').val().trim();
+            if (youtubeUrl !== '' && !matchYoutubeUrl(youtubeUrl)) {
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                $('#youtubeUrlError').css('display', 'inline');
+                return;
+            }
+
+            let email = $('#email').val().trim();
+            if (!isEmailAddress(email)) {
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                $('#emailError').css('display', 'inline');
+                return;
+            }
+
+            if (!isImgLink($('#image').val().trim())) {
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                $('#imageError').text("Incorrect Image Link. Must be *.png, *.jpg or *.jpeg. ");
+                $('#imageError').css('display', 'inline');
+                return;
+            }
+
+            const daysToRun = parseInt($('#days').val());
+            if (daysToRun < 1 || daysToRun > 90) {
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                $('#daysError').css('display', 'inline');
+                return;
+            }
+
+            const rewards = createRewardList();  
+            for(let i = 0; i < rewards.length; i++) {
+                if (!isImgLink(rewards[i].featured_image)) {
+                    $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                    $('#reward' + i + 'ImageError').text("Incorrect Image Link. Must be *.png, *.jpg or *.jpeg. ");
+                    $('#reward' + i + 'ImageError').css('display', 'inline');
+                    return;
+                }
+                if (parseFloat(rewards[i].price) <= 0.0) {
+                    $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                    $('#reward' + i + 'PriceError').text("The Price Must Be a Positive Number. ");
+                    $('#reward' + i + 'PriceError').css('display', 'inline');
+                    return;
+                }
+                if (parseFloat(rewards[i].supply) <= 0.0) {
+                    $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                    $('#reward' + i + 'SupplyError').text("The Supply Must Be a Positive Number. ");
+                    $('#reward' + i + 'SupplyError').css('display', 'inline');
+                    return;
+                }
+            }
+
+            if (!(await validatePinata())) {
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                $('#pinataKeyError').text('Pinata Error: Possible Incorrect Key and Secret Pairs. ');
+                $('#pinataKeyError').css('display', 'inline');
+                return;
+            }
+
+            const title = $('#title').val();
+            const subtitle = $('#subtitle').val();
+            const location = $('#location').val();
+            const story = $('#story').val();
+            const category = $('#category').val();
+            const image = $('#image').val();
+            const pinataKey = $('#pinataKey').val();
+            const pinataSecret = $('#pinataSecret').val();
+
+            const [html, herr] = await safePromise(axios.get(campaignTemplateUrl));
+            const htmlTemplate = html.data;
+            const finalHtml = htmlTemplate.replace('#TITLEMOCK#', title)
+                .replace('#SUBTITLEMOCK#', subtitle)
+                .replace('#LOCATIONMOCK#', location)
+                .replace('#CATEGORYMOCK#', category)
+                .replace('#EMAIL#', email)
+                .replace('#STORYMOCK#', story)
+                .replace('#IMAGEMOCK#', $('#image').val().trim())
+                .replace('#REWARDS#', JSON.stringify(rewards))
+                .replace('#CREATEDATEMOCK#', new Date().getTime() + '')
+                .replace('#YOUTUBEURLMOCK#', youtubeUrl !== '' ? matchYoutubeUrl(youtubeUrl) : '');
+
+            const pinataResponse = await pinStringToIPFS(pinataKey, pinataSecret, finalHtml);
+            const link = 'https://gateway.pinata.cloud/ipfs/' + pinataResponse.data.IpfsHash;
+
+            window.web3 = new Web3(window.ethereum);
+            cf = new window.web3.eth.Contract(cfAbi, cfAddress); 
+            token = new window.web3.eth.Contract(tokenAbi, tokenAddress); 
+
+            const asObj = createAmountSupplyObj();
+            const [cfRes, cfrerr] = await safePromise(cf.methods.create_campaign(link, daysToRun, asObj.amounts, asObj.prices, title, image).send({ from: window.ethereum.selectedAddress }));
+            if (cfrerr) {
+                console.log(cfrerr);
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                return;
+            }
+
+            const [id, ierr] = await safePromise(cf.methods.uri_id(link).call({ from: window.ethereum.selectedAddress }));
+            if (ierr) {
+                console.log(ierr);
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                return;
+            }
+
+            const [contractAddress, caerr] = await safePromise(cf.methods.get_campaign(id).call({ from: window.ethereum.selectedAddress }));
+            if (caerr) {
+                console.log(caerr);
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                return;
+            }
+
+            const collateral = window.web3.utils.toWei($('#totalCollateral').val().trim());
+            const [approveTx, arr] = await safePromise(token.methods.approve(contractAddress, collateral).send({ from: window.ethereum.selectedAddress }));
+            if (arr) {
+                console.log(arr);
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                return;
+            }
+
+            campaign = new window.web3.eth.Contract(cAbi, contractAddress); 
+            const [depositTx, derr] = await safePromise(campaign.methods.deposit_collateral().send({ from: window.ethereum.selectedAddress }));
+            if (derr) {
+                console.log(derr);
+                $('#createButton').attr('class', 'button is-primary is-fullwidth');
+                return;
+            }
+
+            $('#campaignUrl').val(link);
+            $('#contractAddressUrl').val(networkConfig[window.ethereum.chainId].explorer + "address/" + contractAddress);
+            $('#createButton').attr('class', 'button is-primary is-fullwidth');
+            turnModal();
+        }
+
+        async function donateClicked() {
+          const donateTxt = $('#donateInput').val().trim();
+          if (donateTxt === '') return;
+          $('#donateButton').attr('class', 'button is-primary is-loading');
+          
+          [atx, aerr] = await safePromise(cf.methods.donate_to_dev().send({ from: window.ethereum.selectedAddress, value: window.web3.utils.toWei(donateTxt) }));
+          if (aerr) {
+            console.log(aerr);
+            $('#donateButton').attr('class', 'button is-primary');
+            return;
+          }
+
+          $('#donateButton').attr('class', 'button is-primary');
+        }
+
+        async function setAvatarClicked() {
+          const avatarTxt = $('#avatarInput').val().trim();
+          if (avatarTxt === '') return;
+          $('#avatarButton').attr('class', 'button is-info is-loading');
+          
+          [atx, aerr] = await safePromise(cf.methods.set_avatar(avatarTxt).send({ from: window.ethereum.selectedAddress }));
+          if (aerr) {
+            console.log(aerr);
+            $('#avatarButton').attr('class', 'button is-info');
+            return;
+          }
+
+          $('#avatarButton').attr('class', 'button is-info');
+        }
+
+        async function setNicknameClicked() {
+          const nicknameTxt = $('#nicknameInput').val().trim();
+          if (nicknameTxt === '') return;
+          $('#nicknameButton').attr('class', 'button is-info is-loading');
+          
+          [ntx, nerr] = await safePromise(cf.methods.set_nickname(nicknameTxt).send({ from: window.ethereum.selectedAddress }));
+          if (nerr) {
+            console.log(nerr);
+            $('#nicknameButton').attr('class', 'button is-info');
+            return;
+          }
+
+          $('#nicknameButton').attr('class', 'button is-info');
+        }
+
+        function isEmailAddress(str) {
+          var pattern = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+          return pattern.test(str);   
+        }
+
+        function copyContractAddress() {
+            copyById('contractAddressUrl');
+        }
+
+        function copyLinkInput() {
+            copyById('campaignUrl');
+        }
+
+        function copyById(id) {
+            var txt = document.getElementById(id);
+            txt.select();
+            txt.setSelectionRange(0, 99999); /* For mobile devices */
+            navigator.clipboard.writeText(txt.value);
+        }
+
+        function turnModal() {
+            $('#modal').attr('class', 'modal is-active');
+        }
+
+        function closeModal() {
+            $('#modal').attr('class', 'modal');
+        }
+
+        function turnErrorModal() {
+            $('#errorModal').attr('class', 'modal is-active');
+        }
+
+        function closeErrorModal() {
+            $('#errorModal').attr('class', 'modal');
+        }
+
+        function closeNetworkModal() {
+            $('#networkModal').attr('class', 'modal');
+        }
+
+        function createAmountSupplyObj() {
+           let prices = [];
+           let amounts = [];
+           for (let i = 0; i < rewardIdList.length; i++) {
+               let id = rewardIdList[i];
+               amounts.push(parseInt($('#reward' + id + 'Supply').val().trim()));
+               prices.push(window.web3.utils.toWei($('#reward' + id + 'Price').val().trim()));
+           }
+           return { amounts, prices };
+        }
+
+        function createRewardList() {
+           let result = [];
+           for (let i = 0; i < rewardIdList.length; i++) {
+               let id = rewardIdList[i];
+               result.push({
+                    'name': $('#reward' + id + 'Name').val().trim(), 
+                    'description': $('#reward' + id + 'Description').val().trim(), 
+                    'delivery_at': $('#reward' + id + 'Date').val().trim(), 
+                    'featured_image': $('#reward' + id + 'Image').val().trim(), 
+                    'price': $('#reward' + id + 'Price').val().trim(), 
+                    'supply': $('#reward' + id + 'Supply').val().trim(), 
+               });
+           }
+           return result;
+        }
+
+        function isImgLink(url) {
+            if(typeof url !== 'string') return false;
+            return(url.match(/^http[^\?]*.(jpg|jpeg|png)(\?(.*))?$/gmi) != null);
+        }
+
+        function validateRewards() {
+            let valid = true;
+            const fieldList = ['reward#ID#Name', 'reward#ID#Description', 'reward#ID#Date', 'reward#ID#Price', 'reward#ID#Supply', 'reward#ID#Image'];
+            for (let i = 0; i < rewardIdList.length; i++) {
+                for (let j = 0; j < fieldList.length; j++) {
+                    valid = validateId(fieldList[j].replace('#ID#', rewardIdList[i])) && valid;
+                }
+            }
+            return valid;
+        }
+
+        function validate(keys) {
+            let valid = true;
+            for(let i = 0; i < keys.length; i++) {
+                valid = validateId(keys[i]) && valid;
+            }
+            return validateRewards() && valid;
+        }
+
+        function validateId(id) {
+            if ($('#' + id).val().trim() === '') {
+                $('#' + id + 'Error').css('display', 'inline');
+                return false;
+            }
+            return true;
+        }
+
+        async function validatePinata() {
+            const json = {
+                pinataContent: {
+                    dataValues: [
+                        {}
+                    ]
+                }
+            };
+            const [r, e] = await safePromise(axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', json, {
+                    headers: {
+                        pinata_api_key: $('#pinataKey').val().trim(),
+                        pinata_secret_api_key: $('#pinataSecret').val().trim(), 
+                    }
+                }));
+            if (e) {
+                console.log(e);
+                return false;
+            }
+            return true;     
+        }
+
+        async function pinStringToIPFS(pinataApiKey, pinataSecretApiKey, txt) {
+            const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
+            const file = new File([txt], "index.html", { type: "text/html", });
+            let data = new FormData();
+            data.append('file', file);
+            const [res, err] = await safePromise(axios.post(url, data, {
+                    maxBodyLength: 'Infinity', 
+                    headers: {
+                        'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+                        pinata_api_key: pinataApiKey,
+                        pinata_secret_api_key: pinataSecretApiKey
+                    }
+                }));
+            if (err) {
+                console.log(err);
+                return false;
+            }
+            return res;
+        }
+
+        function safePromise(promise) {
+            return promise.then(data => [ data ]).catch(error => [ null, error ]);
+        }
+
+        function matchYoutubeUrl(url) {
+            var p = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+            if(url.match(p)){
+                return url.match(p)[1];
+            }
+            return false;
+        }
+
+        function calculateCollateral() {
+            let totalCollateral = 0;
+            for (let i = 0; i < rewardIdList.length; i++) {
+                const id = rewardIdList[i];
+                const priceTxt = $('#reward' + id + 'Price').val().trim();
+                const supplyTxt = $('#reward' + id + 'Supply').val().trim();
+
+                if (supplyTxt.includes('.')) {
+                    $('#reward' + id + 'Supply').val(0);
+                    $('#totalCollateral').val(0.0);
+                    return;
+                }
+                
+                if (priceTxt === '' || supplyTxt === '') {
+                    $('#totalCollateral').val(0.0);
+                    return;
+                }
+
+                totalCollateral += parseFloat(priceTxt) * parseFloat(supplyTxt);
+            }
+
+            $('#totalCollateral').val(totalCollateral);
+        }
+
+        function addReward() {
+            const id = rewardCount;
+            let template = ('<div id="reward' + id + '" class="column is-one-third>" \
+                                <div class="card"> \
+                                    <div class="card-content"> \
+                                        <div class="field"> \
+                                            <input id="reward#ID#Name" autoComplete="off" placeholder="Enter Reward Name" class="input" type="text" required maxLength="60"/> \
+                                        </div> \
+                                        <p id="reward#ID#NameError" class="help is-danger" style="display: none;">This Field is Required. </p> \
+                                        <div class="field"> \
+                                            <textarea id="reward#ID#Description" autoComplete="off" placeholder="Enter Reward Description" class="input" type="text" required style="min-height: 80px;" maxLength="200"></textarea> \
+                                        </div> \
+                                        <p id="reward#ID#DescriptionError" class="help is-danger" style="display: none;">This Field is Required. </p> \
+                                        <div class="field"> \
+                                            <input id="reward#ID#Date" autoComplete="off" placeholder="Enter Estimated Delivery Date" class="input" type="text" required maxLength="60"/> \
+                                        </div> \
+                                        <p id="reward#ID#DateError" class="help is-danger" style="display: none;">This Field is Required. </p> \
+                                        <div class="field"> \
+                                            <input id="reward#ID#Price" autoComplete="off" placeholder="Enter Reward Price (USDT)" class="input" type="number" required maxLength="60" onkeyup="calculateCollateral();"/> \
+                                        </div> \
+                                        <p id="reward#ID#PriceError" class="help is-danger" style="display: none;">This Field is Required. </p> \
+                                        <div class="field"> \
+                                            <input id="reward#ID#Supply" autoComplete="off" placeholder="Enter Reward Supply" class="input" type="number" required maxLength="60" onkeyup="calculateCollateral();"/> \
+                                        </div> \
+                                        <p id="reward#ID#SupplyError" class="help is-danger" style="display: none;">This Field is Required. </p> \
+                                        <div class="field"> \
+                                            <input id="reward#ID#Image" autoComplete="off" placeholder="Paste Link to Reward Image (4x3 Dimensions)" class="input" type="text" required maxLength="200"/> \
+                                        </div> \
+                                        <p id="reward#ID#ImageError" class="help is-danger" style="display: none;">An Image is Required. </p> \
+                                    </div> \
+                                    <footer class="card-footer"> \
+                                        <a onclick="removeReward(' + id + ')" class="card-footer-item">Delete</a> \
+                                    </footer> \
+                                </div> \
+                            </div>').replaceAll('#ID#', id);
+            $('#rewardContainer').prepend(template);
+            rewardIdList.push(id);
+            rewardCount++;
+        }
+
+        async function addCampaigns() {
+
+          $('#campaigns1').empty();
+          $('#campaigns2').empty();
+
+          for (let i = 0; i < 3; i++) {
+            const html = createCampaignCard(placeHolderCampaigns[i]);
+            $('#campaigns1').append(html);
+          }
+          for (let i = 3; i < 6; i++) {
+            const html = createCampaignCard(placeHolderCampaigns[i]);
+            $('#campaigns2').append(html);
+          }              
+          
+          if (mmConnected) { 
+            window.web3 = new Web3(window.ethereum);
+            cf = new window.web3.eth.Contract(cfAbi, cfAddress);
+            const [campaignCount, ccerr] = await safePromise(cf.methods.campaign_count().call({ from: window.ethereum.selectedAddress }));
+            if (campaignCount > 6) $("#nextProjectButton").css("display", "inline");
+            const campaigns = [];
+            for (let i = 0; i < campaignCount; i++) {
+              if (i === 6) break;
+              const [campaignAddress, caerr] = await safePromise(cf.methods.get_campaign(i).call({ from: window.ethereum.selectedAddress }));
+              const campaign = new window.web3.eth.Contract(cAbi, campaignAddress); 
+              const [uri, uriErr] = await safePromise(campaign.methods.uri(0).call({ from: window.ethereum.selectedAddress }));
+              const [title, terr] = await safePromise(campaign.methods.title().call({ from: window.ethereum.selectedAddress }));
+              const [image, ierr] = await safePromise(campaign.methods.image_url().call({ from: window.ethereum.selectedAddress }));
+              campaigns.push({title, uri, image});
+              lastProjectIndex = i;
+          }
+
+            const phcl = placeHolderCampaigns.length;
+            const campaingsAppend = placeHolderCampaigns.slice(phcl === campaigns.length ? phcl : -1 * (phcl-campaigns.length));
+            const fullcampaings = campaigns.concat(campaingsAppend);
+            $('#campaigns1').empty();
+            $('#campaigns2').empty();
+            let arr1 = fullcampaings.slice(0, 3);
+            for (let i = 0; i < 3; i++) {
+              const html = createCampaignCard(arr1[i]);
+              $('#campaigns1').append(html);
+            }
+            let arr2 = fullcampaings.slice(3, 6);
+            for (let i = 0; i < 3; i++) {
+              const html = createCampaignCard(arr2[i]);
+              $('#campaigns2').append(html);
+            }
+          }
+        }
+
+        async function handleNext() {
+          $('#campaigns1').empty();
+          $('#campaigns2').empty();       
+          $("#nextProjectButton").css("display", "none");  
+          $("#previousProjectButton").css("display", "inline");  
+          $('#nextProjectButton').attr("class", "button is-fullwidth is-outlined is-loading");          
+          
+          if (mmConnected) { // TODO
+            window.web3 = new Web3(window.ethereum);
+            cf = new window.web3.eth.Contract(cfAbi, cfAddress);
+            const [campaignCount, ccerr] = await safePromise(cf.methods.campaign_count().call({ from: window.ethereum.selectedAddress }));
+            if (campaignCount > 6 + (lastProjectIndex + 1)) $("#nextProjectButton").css("display", "inline");
+            const campaigns = [];
+            for (let i = lastProjectIndex + 1; i < campaignCount; i++) {
+              if (i === lastProjectIndex + 7) break;
+              const [campaignAddress, caerr] = await safePromise(cf.methods.get_campaign(i).call({ from: window.ethereum.selectedAddress }));
+              const campaign = new window.web3.eth.Contract(cAbi, campaignAddress); 
+              const [uri, uriErr] = await safePromise(campaign.methods.uri(0).call({ from: window.ethereum.selectedAddress }));
+              const [title, terr] = await safePromise(campaign.methods.title().call({ from: window.ethereum.selectedAddress }));
+              const [image, ierr] = await safePromise(campaign.methods.image_url().call({ from: window.ethereum.selectedAddress }));
+              campaigns.push({title, uri, image});
+              lastProjectIndex = i;
+            }
+
+            const phcl = placeHolderCampaigns.length;
+            const campaingsAppend = placeHolderCampaigns.slice(phcl === campaigns.length ? phcl : -1 * (phcl-campaigns.length));
+            const fullcampaings = campaigns.concat(campaingsAppend);
+            $('#campaigns1').empty();
+            $('#campaigns2').empty();
+            let arr1 = fullcampaings.slice(0, 3);
+            for (let i = 0; i < 3; i++) {
+              const html = createCampaignCard(arr1[i]);
+              $('#campaigns1').append(html);
+            }
+            let arr2 = fullcampaings.slice(3, 6);
+            for (let i = 0; i < 3; i++) {
+              const html = createCampaignCard(arr2[i]);
+              $('#campaigns2').append(html);
+            }
+
+            $('#nextProjectButton').attr("class", "button is-fullwidth is-outlined");      
+          }
+        }
+
+        async function handlePrevious() {
+          $('#campaigns1').empty();
+          $('#campaigns2').empty();       
+          $("#previousProjectButton").css("display", "none");  
+          $("#nextProjectButton").css("display", "inline");  
+          $('#previousProjectButton').attr("class", "button is-fullwidth is-outlined is-loading");          
+          
+          if (mmConnected) { // TODO
+            window.web3 = new Web3(window.ethereum);
+            cf = new window.web3.eth.Contract(cfAbi, cfAddress);
+            const [campaignCount, ccerr] = await safePromise(cf.methods.campaign_count().call({ from: window.ethereum.selectedAddress }));
+            if (lastProjectIndex >= 11) $("#previousProjectButton").css("display", "inline");
+            const campaigns = [];
+            const count = lastProjectIndex - 1;
+            for (let i = lastProjectIndex - 7; i < count; i++) {
+              const [campaignAddress, caerr] = await safePromise(cf.methods.get_campaign(i).call({ from: window.ethereum.selectedAddress }));
+              const campaign = new window.web3.eth.Contract(cAbi, campaignAddress); 
+              const [uri, uriErr] = await safePromise(campaign.methods.uri(0).call({ from: window.ethereum.selectedAddress }));
+              const [title, terr] = await safePromise(campaign.methods.title().call({ from: window.ethereum.selectedAddress }));
+              const [image, ierr] = await safePromise(campaign.methods.image_url().call({ from: window.ethereum.selectedAddress }));
+              campaigns.push({title, uri, image});
+              lastProjectIndex = i;
+            }
+
+            const phcl = placeHolderCampaigns.length;
+            const campaingsAppend = placeHolderCampaigns.slice(phcl === campaigns.length ? phcl : -1 * (phcl-campaigns.length));
+            const fullcampaings = campaigns.concat(campaingsAppend);
+            $('#campaigns1').empty();
+            $('#campaigns2').empty();
+            let arr1 = fullcampaings.slice(0, 3);
+            for (let i = 0; i < 3; i++) {
+              const html = createCampaignCard(arr1[i]);
+              $('#campaigns1').append(html);
+            }
+            let arr2 = fullcampaings.slice(3, 6);
+            for (let i = 0; i < 3; i++) {
+              const html = createCampaignCard(arr2[i]);
+              $('#campaigns2').append(html);
+            }
+
+            $('#previousProjectButton').attr("class", "button is-fullwidth is-outlined");      
+          }
+        }
+
+        function createCampaignCard(campaign) {
+          return `
+            <div class="column is-one-third">
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <img src="${campaign.image}" alt="placeholder image">
+                </figure>
+              </div>
+              <a class="card" href="${campaign.uri}">
+                <div class="card-content">
+                  <h1 class="title has-text-centered">${campaign.title}</h1>
+                </div>
+              </a>
+            </div>
+          `;
+        }
+
+        function createCampaignClicked() {
+          $("#createCampaignId").css('display', 'inline');
+          $("#frontPage").css('display', 'none');
+        }
+
+        function homeClicked() {
+          $("#createCampaignId").css('display', 'none');
+          $("#frontPage").css('display', 'inline');
+          addCampaigns();
+        }
+
+        function removeReward(id) {
+            if(rewardCount === 1) return;
+            $("#reward" + id).remove();
+            rewardCount--;
+            let index = rewardIdList.indexOf(id);
+            if (index !== -1) {
+                rewardIdList.splice(index, 1);
+            }
+        }
+
+        async function checkMetaMask() {
+            if (!validateMetaMask()) return;
+
+            const [acc, ccerr] = await safePromise(ethereum.request({ method: 'eth_accounts' }));
+            window.web3 = new Web3(window.ethereum);
+            cf = new window.web3.eth.Contract(cfAbi, cfAddress); 
+            if (acc.length !== 0) {
+              $('#connectButton').text('Connected');
+              mmConnected = true;
+            }
+        }
+
+        async function connectWalledClicked() {
+            if (!validateMetaMask()) return;
+            
+            if (!mmConnected) {
+              ethereum.request({ method: 'eth_requestAccounts' })
+                    .then(accounts => { 
+                      $('#connectButton').text('Connected');
+                      if (!(window.ethereum.chainId === '0x13881')) {
+                        $('#networkModal').attr('class', 'modal is-active');
+                      }
+                    })
+                    .catch(err => {
+                      $('#connectButton').text('Connect Wallet');
+                    });
+              mmConnected = true;
+            }
+        }
+
+        function validateMetaMask() {
+            if (typeof window.ethereum === 'undefined') {
+                turnErrorModal();
+                return false;
+            }
+            return true;
+        }
+
+        $(document).ready(async function() {
+            await connectWalledClicked();
+            addReward();
+            calculateCollateral();
+            addCampaigns();
+            var accordions = bulmaAccordion.attach();
+        });
+
+    </script>
+
+    <style>
+        html * {
+            font-family: Sofia Pro, sans-serif !important;
+        }
+
+        @media (max-width: 768px) {
+            #hero-1 {
+              background-image: url("https://i.imgur.com/joeQ4nK.png");
+            }
+        }
+
+        @media (min-width: 768px) {
+            #headline {
+                font-size: 6rem; 
+            }
+        }
+
+        @media (min-width: 992px) {
+            #headline {
+                font-size: 7rem;
+            }
+        }
+
+        #headline {
+            line-height: .94; 
+            margin-bottom: 2rem; 
+            font-family: Montserrat, sans-serif;  
+            text-transform: uppercase; 
+            letter-spacing: -.08em; 
+            color: #f8f9fa!important; 
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+    <body>
+
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    
+        <div id="root">
+            <nav class="navbar" role="navigation" aria-label="main navigation" style="background-color: #ffffff">
+                <div class="navbar-brand">
+
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+                </div>
+
+                <div id="navbarBasicExample" class="navbar-menu">
+
+                <div class="navbar-start">
+                    <div class="navbar-item">
+                    <a style="display: flex; justify-content: center; " onclick="homeClicked();">
+                        <img src="https://i.imgur.com/VETORjT.png" width="56" height="56" style="min-height: 56px;"></img>
+                        <u style="font-size: 48px; color: #da4a54;">trustless-crowd</u></a>
+                    </div>
+
+                    <div class="navbar-item">
+                      <div id="createCampaignButton" class="button is-outlined is-large" onclick="createCampaignClicked();">
+                          <a>Create Campaign</a>
+                      </div>
+                  </div>
+                </div>
+
+                <div class="navbar-end">
+
+                    <div class="navbar-item">
+                        <div id="connectButton" class="button is-outlined is-large is-primary" onclick="connectWalledClicked();">
+                            <a>Connect Wallet</a>
+                        </div>
+                    </div>
+
+                </div>
+
+                </div>
+            </nav>
+            
+            <div id="frontPage">
+
+              <section class="hero is-fullheight video" id="hero-1">
+                <div class="hero-video">
+                    <video poster="https://i.imgur.com/su6KkCk.png" id="bgvid" playsinline autoplay muted loop style="position: relative; left: auto; top: auto; transform: none; object-fit: cover; opacity: 0.78;">
+                        <source src="https://gateway.pinata.cloud/ipfs/QmQJikH31TEfqwxQvtwzTzMLEecA3GkKiF7Ba2jWamysb8" type="video/webm">
+                    </video>
+                </div>
+                <div class="hero-body">
+                    <div class="container">
+    
+                        <h1 id="headline" class="title has-text-centered">
+                          <span style="text-decoration: underline; text-decoration-color: #95d934">Trustless and Serverless Crowdsourcing dApp with NFT Dex. </span>
+                        </h1>
+    
+                        <div class="has-text-centered">
+                          <a class="button is-rounded is-large is-primary is-outlined mt-6" href="/#campaigns"><span style="text-decoration: underline; text-decoration-color: #da4a54">Browse Campaigns</span></a>
+                          <div class="button is-rounded is-large is-success is-outlined mt-6" onclick="createCampaignClicked();"><span style="text-decoration: underline; text-decoration-color: #da4a54">Create Campaign</span></div>
+                        </div>
+    
+                    </div>
+                </div>
+    
+            </section>
+
+              <br />
+
+              <h1 class="title has-text-centered">Features</h1>
+
+              <div class="columns">
+                <div class="column is-1"></div>
+                <div class="column is-10">
+                  <div class="columns is-centered">
+
+                    <div class="column is-one-forth">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/dIyWvcX.png" alt="permissionless flag">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Permissionless</div>
+                          <p class="subtitle has-text-centered">No KYC Required. Permissionless and Censorship-Resistant. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="column is-one-forth">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/1LhXpD4.png" alt="server">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Serverless</div>
+                          <p class="subtitle has-text-centered">No Central Server. The Pages are Hosted on IPFS Through Pinata.Cloud. No Cookies or Tracking Also. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="column is-one-forth">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/6G6NJnk.png" alt="gratis">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Gratis</div>
+                          <p class="subtitle has-text-centered">No Platform Fees. You Can Donate to Devs if You Wish. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="column is-one-forth">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/cGn0Pu9.png" alt="trustless">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Trustless</div>
+                          <p class="subtitle has-text-centered">Collateralized and Non-Custodian Swaps Play. The Trust is Guaranteed by Code and Game Theory. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                  </div>
+    
+                  <div class="columns is-centered">
+    
+                    <div class="column is-one-third">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/pCYixdn.png" alt="exchange dex">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Product DEX</div>
+                          <p class="subtitle has-text-centered">Be an Early Bird to a Campaign. Earn in Native Cryptocurrencies By Trading on DEX. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="column is-one-third">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/cvHhKfe.png" alt="target">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Browse Campaign</div>
+                          <p class="subtitle has-text-centered">Support Cool Crowdfunding Projects or Crowdloaning Campaigns. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="column is-one-third">
+                      <div class="card">
+                        <div class="card-image has-text-centered">
+                          <figure class="image is-64x64 is-inline-block">
+                            <img src="https://i.imgur.com/b3pqsMF.png" alt="city">
+                          </figure>
+                        </div>
+                        <div class="card-content">
+                          <div class="title has-text-centered" style="color: #16222e;">Build</div>
+                          <p class="subtitle has-text-centered">Create Your Own Front-End or Website Hooked to trustlesscrowd's Contracts. </p>
+                        </div>
+                      </div>
+                    </div>
+    
+                  </div>
+                </div>
+                <div class="column is-1"></div>
+              </div>
+
+              <br />
+              <br />
+
+              <h1 id="campaigns" class="title has-text-centered">Browse Campaigns</h1>
+
+              <div class="columns">
+
+                <div class="column is-1"></div>
+                <div class="column is-10">
+                  <div id="campaigns1" class="columns"></div>
+                  <div id="campaigns2" class="columns"></div>
+
+                  <div class="columns">
+                    <div class="column is-one-third">
+                      <div id="previousProjectButton" class="button is-fullwidth is-outlined" onclick="handlePrevious()" style="display: none;">Previous</div>
+                    </div>
+                    <div class="column is-one-third"></div>
+                    <div class="column is-one-third">
+                      <div id="nextProjectButton" class="button is-fullwidth is-outlined" onclick="handleNext()" style="display: none;">Next</div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="column is-1"></div>
+
+              </div>
+
+              <br />
+              <br />
+
+              <h1 id="faq" class="title has-text-centered">FAQ</h1>
+
+              <div class="columns">
+
+                <div class="column is-1"></div>
+
+                <div class="column is-10">
+
+                  <section class="accordions">
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>What is TrustlessCrowd.Network?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          TrustlessCrowd.Network is a serverless crowdsourcing dApp on Polygon Blockchain. Unlike traditional web 2.0 crowdfunding platforms, there are no platform fees. You can create a crowdfunding campaign and get your project funded. Crowdloaning will be available soon. 
+                        </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>What does trustless mean? </p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          The trustless aspect of TrustlessCrowd.Network means that there is no immediate third party that is establishing the crowdsourcing process. Contract code and game theory guarantee trust. Campaign creators are required to deposit the collateral value of the amount that they are trying to raise. This collateral serves so that the creators are encouraged to ship their products to the buyers. Buyers pay a collateral value of the same amount that a product costs. Once buyers receive their physical reward, they then claim the reward. Claiming a product unlocks the collateral of the item back to the buyer. And campaign creators get the collateral for that reward, as well as the value of its price.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>How is TrustlessCrowd.Network serverless?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          TrustlessCrowd.Network is serverless because it serves as a single HTML file with inline CSS and javascript. Pinata.cloud hosts this HTML file on IPFS as well. You can reach this website on the Pinata service link. The HTML file is the front-end implementation that hooks to Polygon network. So there are no centralized servers involved.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>How do I start a campaign?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          You can start a campaign by visiting TrustlessCrowd.Network and click on the Create Campaign button. Then you need to fill out the form's information. Create an account on the pinata.cloud and create an API key and secret that you paste into appropriate fields. Watch this video for some additional help. Make sure to have USDT funds in the amount of collateral value that you are trying to raise.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>Why do I need to deposit collateral when starting a campaign?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          Campaign creators are required to deposit the collateral value of the amount that they are trying to raise. This collateral serves so that the creators are encouraged to ship their products to the buyers. Buyers pay a collateral value of the same amount that a product costs. Once buyers receive their physical reward, they then claim the reward. Claiming a product unlocks the collateral of the item back to the buyer. And campaign creators get the collateral for that reward, as well as the value of its price.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>How do I buy a reward for a campaign?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          You can buy an item on the right-side panel of the campaign's page by clicking the Buy button. Make sure you have USDT and enough funds to pay for the collateral amount.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>Why do I pay collateral when I buy a reward?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          A buyer must pay the collateral when buying a reward to be motivated to claim it once the physical item is delivered. Claiming the product releases the collateral back to the account of the buyer.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>How and when do I get my reward shipped?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          First, you need to deliver your contact information to the campaign owner by reaching out to their email. After that, they will ship their unit when they are ready. Once you get your item, claim the reward and release the collateral values.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>How do I deliver my address information to the campaign creator?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          Each campaign has the creator's email address on its page. Use that information to contact the campaign's owner.                         </div>
+                      </div>
+                    </article>
+                    <article class="accordion">
+                      <div class="accordion-header">
+                        <p>How can I support TrustlessCrowd.Network?</p>
+                        <button class="toggle" aria-label="toggle"></button>
+                      </div>
+                      <div class="accordion-body">
+                        <div class="accordion-content">
+                          You can support the TrustlessCrowd.Network developer by donating. There is a donate panel in the footer of the website.                         </div>
+                      </div>
+                    </article>
+                  </section>                  
+
+                </div>
+
+                <div class="column is-1"></div>
+
+              </div>
+
+            </div>
+
+            <div class="columns">
+                <div class="column is-2"></div>
+
+                <div class="column is-8">
+                    <div class="container">
+
+                      <br />
+
+                      <div id="createCampaignId" style="display: none;">
+
+                        <h1 class="title has-text-centered">Create Campaign</h1>
+                        
+                        <div class="card">
+
+                            <div class="card-content">
+                                <div class="field">
+                                    <input id="title" autoComplete="off" placeholder="Enter Your Title Here" class="input" type="text" name="title" required maxLength="60"/>
+                                </div>
+                                <p id="titleError" class="help is-danger" style="display: none;">This Field is Required. </p>
+                
+                                <div class="field">
+                                    <textarea id="subtitle" autoComplete="off" placeholder="Enter Your Subtitle Here" class="input" type="text" name="subtitle" required style="min-height: 80px;" maxLength="135"></textarea>
+                                </div>
+                                <p id="subtitleError" class="help is-danger" style="display: none;">This Field is Required. </p>
+
+                                <div class="columns">
+                                <div class="column is-one-half">
+                                    <div class="field">
+                                    <input id="location" autoComplete="off" placeholder="Enter Your Location Here" class="input" type="text" name="location" required maxLength="60"/>
+                                    </div>
+                                    <p id="locationError" class="help is-danger" style="display: none;">This Field is Required. </p>
+                                </div>
+            
+                                    <div class="column is-one-half">
+                                    <small><strong>Category:</strong></small>
+                                    <div class="field">
+                                        <select id="category" class="select is-fullwidth">
+                                            <option>Arts</option>
+                                            <option>Comics & Illustration</option>
+                                            <option>Design & Tech</option>
+                                            <option>Film</option>
+                                            <option>Food & Craft</option>
+                                            <option>Games</option>
+                                            <option>Music</option>
+                                            <option>Publishing</option>
+                                        </select>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                  <input id="email" autoComplete="off" placeholder="Enter Your Email" class="input" type="email" name="email" required maxLength="60"/>
+                                </div>
+                                <p id="emailError" class="help is-danger" style="display: none;">Incorrect Email Format. </p>
+
+                                <div class="field">
+                                    <input id="days" autoComplete="off" placeholder="Days to Run (1 to 90)" class="input" type="text" name="days" required maxLength="60"/>
+                                  </div>
+                                <p id="daysError" class="help is-danger" style="display: none;">Incorrect Days Count. </p>
+
+                                <hr />
+
+                                <div class="columns">
+                                    <div class="column is-one-half">
+                                      <div class="field">
+                                        <input id="youtubeUrl" autoComplete="off" placeholder="Paste Your Youtube Link (Optional)" class="input" type="text" name="youtube" required maxLength="60"/>
+                                      </div>
+                                      <p id="youtubeUrlError" class="help is-danger" style="display: none;">Incorrect Youtube Url. </p>
+                                    </div>
+
+                                    <div class="column is-one-half">
+                                        <div class="field">
+                                            <input id="image" autoComplete="off" placeholder="Paste Your Image Link (*.jpg, *png, 705px:400px)" class="input" type="text" name="image" required maxLength="200"/>
+                                        </div>
+                                        <p id="imageError" class="help is-danger" style="display: none;">An Image is Required. </p>
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <textarea id="story" autoComplete="off" placeholder="Enter Your Story Here" class="input" type="text" name="story" required style="min-height: 110px;" maxLength="600"></textarea>
+                                </div>
+                                <p id="storyError" class="help is-danger" style="display: none;">This Field is Required. </p>
+
+                                <hr />
+
+                                <h2 class="subtitle has-text-centered"><strong>Rewards</strong> (at Least One is Required.)</h2>
+
+                                <div class="columns" id="rewardContainer">
+                                    
+                                    <div class="column is-1">
+                                        <div class="button is-link" onclick="addReward();">Add</div>
+                                    </div>
+                                
+                                </div>
+
+                                <hr />
+
+                                <h2 class="subtitle has-text-centered"><strong><a href="https://docs.pinata.cloud/" target="_blank">pinata.cloud</a></strong></h2>
+
+                                <div class="columns">
+
+                                    <div class="column is-half">
+                                        <div class="field">
+                                            <input id="pinataKey" autoComplete="off" placeholder="Enter Your Pinata Key Here" class="input" type="text" name="pinataKey" required maxLength="60"/>
+                                        </div>
+                                        <p id="pinataKeyError" class="help is-danger" style="display: none;">This Field is Required. </p>
+                                    </div>
+
+                                    <div class="column is-half">
+                                        <div class="field">
+                                            <input id="pinataSecret" autoComplete="off" placeholder="Enter Your Pinata Secret Here" class="input" type="text" name="pinataSecret" required maxLength="400"/>
+                                        </div>
+                                        <p id="pinataSecretError" class="help is-danger" style="display: none;">This Field is Required. </p>
+                                    </div>
+
+                                </div>
+
+                                <hr />
+
+                                <div class="columns">
+
+                                    <div class="column is-half">
+                                        
+                                        <small class="ml-1"><strong>Total Collateral:</strong></small>
+                                        <div class="field">
+                                            <input id="totalCollateral" style="color: green;" class="input" value="0.0" type="number" name="totalCollateral" maxLength="60" disabled></input>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="column is-half">
+
+                                        <small class="ml-1"><strong>Good Luck!</strong></small>
+                                        <div class="field">
+                                            <div id="createButton" onclick="createClicked();" class="button is-primary is-fullwidth">Create</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                </div>
+
+                <div class="column is-2"></div>
+            </div>
+
+            <div id="modal" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                    <p class="modal-card-title has-text-centered"><strong>Congratulations!</strong></p>
+                    <button class="delete" aria-label="close" onclick="closeModal();"></button>
+                  </header>
+                  <section class="modal-card-body">
+                    <p class="subtitle has-text-centered">Your Campaign is Live Now. You Can Get Your Links Below. </p>
+                    <p class="subtitle has-text-centered"><strong>Please Save These Links. </strong></p>
+                    
+                    <label><strong class="ml-1">Campaign Url</strong></label>
+                    <div class="columns">
+                        <div class="column is-fullwidth">
+                            <div class="field">
+                                <input id="campaignUrl" autoComplete="off" value="-" class="input" type="text" name="linkInput" maxLength="200" disabled/>
+                            </div>
+                        </div>
+
+                        <div class="column is-narrow">
+                            <div class="button is-outlined" onclick="copyLinkInput();">
+                                <span class="icon">
+                                    <i class="fas fa-copy"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label><strong class="ml-1">Contract Address</strong></label>
+                    <div class="columns">
+                        <div class="column is-fullwidth">
+                            <div class="field">
+                                <input id="contractAddressUrl" autoComplete="off" value="-" class="input" type="text" name="contractAddressUrl" maxLength="200" disabled/>
+                            </div>
+                        </div>
+
+                        <div class="column is-narrow">
+                            <div class="button is-outlined" onclick="copyContractAddress();">
+                                <span class="icon">
+                                    <i class="fas fa-copy"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                  </section>
+                  <footer class="modal-card-foot">
+                    <button class="button is-success" onclick="closeModal();">Ok</button>
+                  </footer>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+          <div class="container">
+
+            <div class="columns">
+
+              <div class="column is-1"></div>
+
+              <div class="column is-4">    
+                <strong class="mb-1">Donate to Dev: </strong>    
+                <div class="columns">
+                  <div class="column">
+
+                    <div class="field">
+                      <p class="control has-icons-left">
+                        <input id="donateInput" class="input" type="number">
+                        <span class="icon is-small is-left">
+                          <i class="fa fa-heart"></i>
+                        </span>
+                      </p>
+                    </div>
+
+                  </div>
+                  <div class="column">
+
+                    <div id="donateButton" onclick="donateClicked();" class="button is-primary">Donate</div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="column is-3">     
+                <strong class="mb-1">Paste Link to Avatar Image: </strong>          
+                <div class="columns">
+                  <div class="column">
+
+                    <div class="field">
+                      <p class="control">
+                        <input id="avatarInput" class="input" type="text" placeholder="Set Avatar">
+                      </p>
+                    </div>
+
+                  </div>
+                  <div class="column">
+
+                    <div id="avatarButton" class="button is-info" onclick="setAvatarClicked();">Set</div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="column is-3">               
+                <strong class="mb-1">Set Your Nickname: </strong>          
+                <div class="columns">
+                  <div class="column">
+
+                    <div class="field">
+                      <p class="control">
+                        <input id="nicknameInput" class="input" type="text" placeholder="Set Nickname">
+                      </p>
+                    </div>
+
+                  </div>
+                  <div class="column">
+
+                    <div id="nicknameButton" onclick="setNicknameClicked();" class="button is-info">Set</div>
+
+                  </div>
+                </div>
+              </div>
+
+              <a class="column is-narrow" href="https://discord.gg/uDzjZBFY">
+                <figure class="image is-128x128">
+                  <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord">
+                </figure>
+              </a>
+
+              <div class="column is-1"></div>
+            </div>
+
+            <div class="content has-text-centered">
+              <br />
+              <p>
+                Made with <strong>❤️</strong> from Serbia.  
+              </p>
+            </div>
+          </div>
+        </footer>
+
+        <div id="errorModal" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title has-text-centered"><strong>Meta Mask Not Installed!</strong></p>
+              <button class="delete" aria-label="close" onclick="closeErrorModal();"></button>
+            </header>
+            <section class="modal-card-body">
+              <p class="subtitle has-text-centered">This Website Requires Meta Mask to Be Installed. </p>
+              <p class="subtitle has-text-centered">Please visit <a target="_blank" href="https://metamask.io/">this link</a>. </p>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-success" onclick="closeErrorModal();">Ok</button>
+            </footer>
+          </div>
+        </div>
+
+        <div id="networkModal" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title has-text-centered"><strong>Polygon Testnet Network Not Selected!</strong></p>
+              <button class="delete" aria-label="close" onclick="closeNetworkModal();"></button>
+            </header>
+            <section class="modal-card-body">
+              <p class="subtitle has-text-centered">Please Select Polygon Testnet Network on MetaMask and Reload the Page. </p>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-success" onclick="closeNetworkModal();">Ok</button>
+            </footer>
+          </div>
+        </div>
+
+      </div>
+  </div>
+
+    </body>
+</html>
