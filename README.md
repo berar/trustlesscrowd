@@ -2,7 +2,8 @@
 Trustless and Serverless Crowdsourcing dApp with NFT Dex.
 
 # Submission link
-TODO
+
+https://gateway.pinata.cloud/ipfs/QmPJ6MHfuJ17wbkXbSGFPH1e6bQfqF8CKmAfBePMkhBc3W
 
 # Short pitch
 ## Pain
