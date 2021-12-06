@@ -44,6 +44,8 @@ aleksandar.berar@gmail.com
 
 You can review the source code and the documentation found in this repository. 
 
+If you wish to test the dApp, please request testnet USDT tokens via email. 
+
 # Documentation on how to run the project
 
 ## Contracts
