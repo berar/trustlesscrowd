@@ -28,7 +28,8 @@ Collateralized and Non-Custodian Swaps Play. Game Theory and the Code guarantee 
 Be an Early Bird to a Campaign. Earn in Native Cryptocurrencies By Trading on DEX.
 
 # Recorded video demo of the project and small pitch
-TODO
+
+https://gateway.pinata.cloud/ipfs/QmbWT5mrRor6PsW2ur7hdZWy8DESEEtvoQrBsZuoZgcGW1
 
 # Date when team began working on the project 
 November 16th, 2021.
